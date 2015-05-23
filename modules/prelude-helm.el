@@ -60,6 +60,10 @@
 (define-key helm-command-map (kbd "C-c w") 'helm-wikipedia-suggest)
 (define-key helm-command-map (kbd "SPC")   'helm-all-mark-rings)
 
+;; swap <tab> and C-j
+(define-key helm-map (kbd "C-i")   'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-j")   'helm-select-action)
+
 (push "Press <C-c p h> to navigate a project in Helm." prelude-tips)
 
 (provide 'prelude-helm)
