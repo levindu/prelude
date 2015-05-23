@@ -44,6 +44,7 @@
       ido-max-prospects 10
       ido-save-directory-list-file (expand-file-name "ido.hist" prelude-savefile-dir)
       ido-default-file-method 'selected-window
+      ido-default-buffer-method 'selected-window
       ido-auto-merge-work-directories-length -1)
 (ido-mode +1)
 (ido-ubiquitous-mode +1)
