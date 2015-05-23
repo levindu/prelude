@@ -113,6 +113,9 @@
 
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+;; Use C-' to jump in isearch
+(avy-setup-default)
+
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "s-w") 'ace-window)
