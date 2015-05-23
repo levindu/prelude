@@ -96,6 +96,21 @@
                  isearch-string
                (regexp-quote isearch-string))))))
 
+;;flush or keep lines in occur-mode buffer
+(define-key occur-mode-map "f"
+  (lambda () (interactive)
+    (let ((buffer-read-only))
+      (save-excursion
+        (beginning-of-buffer)
+        (call-interactively 'flush-lines)))))
+
+(define-key occur-mode-map "k"
+  (lambda () (interactive)
+    (let ((buffer-read-only))
+      (save-excursion
+        (beginning-of-buffer)
+        (call-interactively 'keep-lines)))))
+
 ;; use hippie-expand instead of dabbrev
 (global-set-key (kbd "M-/") 'hippie-expand)
 
