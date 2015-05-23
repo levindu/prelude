@@ -51,7 +51,8 @@
 (setq inhibit-startup-screen t)
 
 ;; nice scrolling
-(setq scroll-margin 0
+(setq scroll-margin 3
+      scroll-step 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
