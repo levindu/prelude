@@ -69,6 +69,7 @@
     smartparens
     smartrep
     undo-tree
+    use-package
     volatile-highlights
     zenburn-theme
     zop-to-char)
@@ -186,6 +187,10 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
      (unless (package-installed-p package)
        (prelude-auto-install extension package mode))))
  prelude-auto-install-alist)
+
+(setq use-package-verbose t
+      use-package-always-ensure t)
+(require 'use-package)
 
 (provide 'prelude-packages)
 ;; Local Variables:
