@@ -568,6 +568,14 @@ With a prefix argument ARG, find the `user-init-file' instead."
           (add-to-list 'symbol-names (substring-no-properties name))
           (add-to-list 'name-and-pos (cons (substring-no-properties name) position))))))))
 
+(defun prelude-switch-to-same-mode-buffer ()
+  (interactive)
+  (let ((current-mode major-mode)
+        (next-mode nil))
+    (while (not (eq next-mode current-mode))
+      (next-buffer)
+      (setq next-mode major-mode))))
+
 (defvar prelude-dired-is-omit-mode-on t)
 
 (defun prelude-dired-toggle-omit-mode ()

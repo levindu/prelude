@@ -135,6 +135,10 @@
 (global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "s-w") 'ace-window)
 
+(global-set-key (kbd "C-'") 'prelude-switch-to-previous-buffer)
+(global-set-key (kbd "C-`") 'prelude-switch-to-same-mode-buffer)
+(global-set-key (kbd "C-\"") 'goto-last-change)
+
 (provide 'prelude-global-keybindings)
 
 ;;; prelude-global-keybindings.el ends here
