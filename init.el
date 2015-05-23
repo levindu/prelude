@@ -44,7 +44,7 @@
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
-(defvar prelude-dir (file-name-directory load-file-name)
+(defvar prelude-dir (file-name-directory (or (file-symlink-p load-file-name) load-file-name))
   "The root dir of the Emacs Prelude distribution.")
 (defvar prelude-core-dir (expand-file-name "core" prelude-dir)
   "The home of Prelude's core functionality.")
