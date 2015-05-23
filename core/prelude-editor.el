@@ -133,7 +133,7 @@
       recentf-max-menu-items 15
       ;; disable recentf-cleanup on Emacs start, because it can cause
       ;; problems with remote files
-      recentf-auto-cleanup 'never)
+      recentf-auto-cleanup '300)        ; when idle 300 seconds
 
 (defun prelude-recentf-exclude-p (file)
   "A predicate to decide whether to exclude FILE from recentf."
