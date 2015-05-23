@@ -55,6 +55,24 @@
   (define-key ido-common-completion-map "[" 'ido-next-match)
   (define-key ido-common-completion-map "]" 'ido-prev-match)
   (define-key ido-common-completion-map " " 'ido-restrict-to-matches))
+
+;; sort by mtime
+(add-hook 'ido-make-file-list-hook 'prelude-ido-sort-mtime)
+(add-hook 'ido-make-dir-list-hook 'prelude-ido-sort-mtime)
+(defun prelude-ido-sort-mtime ()
+  (setq ido-temp-list
+        (sort ido-temp-list
+              (lambda (a b)
+                (let ((x (sixth (file-attributes a)))
+                      (y (sixth (file-attributes b))))
+                  (if (and x y)
+                      (time-less-p y x)
+                    x)))))
+  (ido-to-end  ;; move . files to end (again)
+   (delq nil (mapcar
+              (lambda (x) (and (char-equal (string-to-char x) ?.) x))
+              ido-temp-list))))
+
 ;;; smarter fuzzy matching for ido
 (flx-ido-mode +1)
 ;; disable ido faces to see flx highlights
