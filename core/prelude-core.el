@@ -299,6 +299,12 @@ there's a region, all lines that region covers will be duplicated."
     (call-interactively 'indent-region))
   (whitespace-cleanup))
 
+(defun prelude-save-buffer-without-hooks ()
+  "Save buffer without any `write-file-functions' or `after-save-hook'."
+  (interactive)
+  (let (write-file-functions after-save-hook)
+    (save-buffer)))
+
 (defun prelude-eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
