@@ -50,6 +50,11 @@
 (ido-mode +1)
 (ido-ubiquitous-mode +1)
 
+(add-hook 'ido-setup-hook 'prelude-ido-setup-keys)
+(defun prelude-ido-setup-keys ()
+  (define-key ido-common-completion-map "[" 'ido-next-match)
+  (define-key ido-common-completion-map "]" 'ido-prev-match)
+  (define-key ido-common-completion-map " " 'ido-restrict-to-matches))
 ;;; smarter fuzzy matching for ido
 (flx-ido-mode +1)
 ;; disable ido faces to see flx highlights
