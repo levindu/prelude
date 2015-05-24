@@ -87,5 +87,7 @@ This functions should be added to the hooks of major modes for programming."
     (global-flycheck-mode +1)
   (add-hook 'prog-mode-hook 'flycheck-mode))
 
+(add-hook 'prog-mode-hook 'elide-head)
+
 (provide 'prelude-programming)
 ;;; prelude-programming.el ends here
