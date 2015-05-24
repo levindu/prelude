@@ -126,6 +126,9 @@
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
 
+(use-package git-messenger
+  :bind ("C-x v p" . git-messenger:popup-message))
+
 (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; Use C-' to jump in isearch
