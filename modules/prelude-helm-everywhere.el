@@ -67,5 +67,8 @@
 ;; enable Helm version of Projectile with replacment commands
 (helm-projectile-on)
 
+(use-package springboard
+  :bind ("M-X" . springboard))
+
 (provide 'prelude-helm-everywhere)
 ;; prelude-helm-everywhere.el ends here.
