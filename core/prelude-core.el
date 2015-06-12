@@ -345,6 +345,17 @@ buffer is not visiting a file."
                          (ido-read-file-name "Find file(as root): ")))
     (prelude-find-alternate-file-as-root buffer-file-name)))
 
+(defun prelude-clone-file (dest-file)
+  (interactive "GClone to file:")
+  (unless (buffer-file-name)
+    (error "Not file."))
+  (when (file-directory-p dest-file)
+    (setq dest-file (expand-file-name
+                     (file-name-nondirectory (buffer-file-name))
+                     dest-file)))
+  (copy-file (buffer-file-name) dest-file)
+  (find-file dest-file))
+
 (defun prelude-reopen-as-root ()
   "Find file as root if necessary."
   (unless (or (tramp-tramp-file-p buffer-file-name)
