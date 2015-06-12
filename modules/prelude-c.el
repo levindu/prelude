@@ -54,6 +54,19 @@
 
 (add-hook 'makefile-mode-hook (lambda ()
                                 (run-hooks 'prelude-makefile-mode-hook)))
+
+(defun prelude-indent-c(start end)
+  "Invoke indent to format c code."
+  (interactive (if mark-active
+                   (list (region-beginning) (region-end))
+                 (list (point-min) (point-max))))
+  (let ((indent (executable-find "indent")))
+    (if indent
+        (shell-command-on-region start end
+                                 "indent -kr -bl -bls -nce -bli0 -cdw -nut"
+                                 t t)
+      (error "program 'indent' not found!"))))
+
 (provide 'prelude-c)
 
 ;;; prelude-c.el ends here
