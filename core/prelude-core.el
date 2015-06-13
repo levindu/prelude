@@ -380,7 +380,70 @@ the current buffer."
 (defun prelude-insert-date ()
   "Insert a timestamp according to locale's date and time format."
   (interactive)
-  (insert (format-time-string "%c" (current-time))))
+  (let ((time-strs (mapcar (lambda (format)
+                             (format-time-string format))
+                           '("%c"
+                             "%Y-%m-%d %T"
+                             "%Y-%m-%d %T%z"
+                             "%Y-%m-%d"
+                             "%FT%T%z"))))
+  (insert (completing-read "Select: " time-strs))))
+
+(defun prelude-insert-file-name ()
+  "Insert path interactively"
+  (interactive)
+  (let ((path (read-file-name "Insert: ")))
+    (insert path)))
+
+(defun prelude-insert-directory-name ()
+  "Insert path interactively"
+  (interactive)
+  (let ((path (read-directory-name "Insert: ")))
+    (insert path)))
+
+(defun prelude-kill-buffer-info (choice)
+  "Copy the buffer-file-name to the kill-ring"
+  (interactive "cCopy Buffer name (f)ile, (d)irectory, (l)ineno, (j)ava (w)ich-func ?")
+  ;(message "your choice %c" choice)
+  (let* ((path (if (eq major-mode 'dired-mode)
+                   (dired-get-filename)
+                 (or (buffer-file-name) "")))
+         (name (file-name-nondirectory path))
+         (new-kill-string
+          (cond ((eq choice ?f) path)
+                ((eq choice ?F) name)
+                ((eq choice ?d) (file-name-directory path))
+                ((eq choice ?l) (format "%s:%s" path
+                                        (line-number-at-pos)))
+                ((eq choice ?L) (format "%s:%s" name
+                                        (line-number-at-pos)))
+                ((eq choice ?j) (prelude-java-get-class:lineno))
+                ((eq choice ?w) (which-function))
+                ((eq choice ?W) (format "%s(%s)" (which-function) name)))))
+    (when new-kill-string
+      (message "\"%s\" copied" new-kill-string)
+      (kill-new new-kill-string))))
+
+(defun prelude-java-get-class:lineno ()
+  (let ((lineno (number-to-string (line-number-at-pos)))
+        (package
+         (save-excursion
+           (goto-char (point-min))
+           (unless (search-forward-regexp
+                    "^\\s-*package\\s-+\\(.+?\\)\\s-*;\\s-*$" nil t)
+             (error "Java package name not found"))
+           (match-string-no-properties 1))))
+    (concat package "." (file-name-base) ":" lineno)))
+
+(defun prelude-dos-line-end ()
+  "Convert buffer to DOS line end."
+  (interactive)
+  (set-buffer-file-coding-system 'dos))
+
+(defun prelude-unix-line-end ()
+  "Convert buffer to UNIX line end."
+  (interactive)
+  (set-buffer-file-coding-system 'unix))
 
 (defun prelude-recentf-ido-find-file ()
   "Find a recent file using ido."
