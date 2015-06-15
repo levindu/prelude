@@ -67,6 +67,11 @@ Will only occur if `prelude-whitespace' is also enabled."
           (const :tag "whitespace: clean whitespace in buffer." whitespace))
   :group 'prelude)
 
+(defcustom prelude-treat-constituent-as-word t
+  "Non-nil values treat constituent chars (-, _) as part of word."
+  :type 'boolean
+  :group 'prelude)
+
 (defcustom prelude-flyspell t
   "Non-nil values enable Prelude's flyspell support."
   :type 'boolean

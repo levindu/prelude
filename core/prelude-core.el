@@ -751,5 +751,28 @@ With a prefix argument ARG, find the `user-init-file' instead."
              (eq old-tick (buffer-chars-modified-tick)))
         (prelude-complete)))))))
 
+(define-minor-mode prelude-subword-mode
+  "Subword minor mode for editing sub word and CamelCase."
+  :lighter " Sw"
+  (if prelude-subword-mode
+      ;; ON
+      (let ((constituent-list '(?_ ?-)))
+        ;; save syntax
+        (unless (local-variable-p 'prelude-subword-saved-syntax-entries)
+          (set (make-local-variable 'prelude-subword-saved-syntax-entries)
+               (mapcar (lambda (c)(cons c (char-syntax c)))
+                       constituent-list)))
+        ;; modify syntax from w to _
+        (mapc (lambda (x)
+                (when (= (cdr x) ?w)
+                  (modify-syntax-entry (car x) "_")))
+              prelude-subword-saved-syntax-entries)
+        (subword-mode +1))
+    ;; OFF
+    (subword-mode 0)
+    ;; restore syntax
+    (dolist (entry prelude-subword-saved-syntax-entries)
+      (modify-syntax-entry (car entry) (char-to-string (cdr entry))))))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here

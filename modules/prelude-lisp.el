@@ -46,6 +46,9 @@
 
 ;; a great lisp coding hook
 (defun prelude-lisp-coding-defaults ()
+  (when prelude-treat-constituent-as-word
+    (mapc (lambda (x) (modify-syntax-entry x "w"))
+          '(?- ?_)))
   (smartparens-strict-mode +1)
   (rainbow-delimiters-mode +1))
 
@@ -53,6 +56,9 @@
 
 ;; interactive modes don't need whitespace checks
 (defun prelude-interactive-lisp-coding-defaults ()
+  (when prelude-treat-constituent-as-word
+    (mapc (lambda (x) (modify-syntax-entry x "w"))
+          '(?- ?_)))
   (smartparens-strict-mode +1)
   (rainbow-delimiters-mode +1)
   (whitespace-mode -1))

@@ -35,6 +35,9 @@
 (require 'prelude-programming)
 
 (defun prelude-c-mode-common-defaults ()
+  (when prelude-treat-constituent-as-word
+    (mapc (lambda (x) (modify-syntax-entry x "w"))
+          '(?_)))
   (setq c-default-style "k&r"
         c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
