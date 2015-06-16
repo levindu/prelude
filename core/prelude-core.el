@@ -774,5 +774,37 @@ With a prefix argument ARG, find the `user-init-file' instead."
     (dolist (entry prelude-subword-saved-syntax-entries)
       (modify-syntax-entry (car entry) (char-to-string (cdr entry))))))
 
+(defvar prelude-shell:binded-shell nil "Shell buffer binded to current buffer")
+(make-variable-buffer-local 'prelude-shell:binded-shell)
+(defvar prelude-shell:last-buffer nil "Last buffer invoking `prelude-shell'")
+(defvar prelude-shell:last-shell nil "Last shell binded")
+
+(defun prelude-shell(arg)
+  "Open shell in new window."
+  (interactive "P")
+  (let ((saved-buf (current-buffer))
+        (saved-mode major-mode))
+    (cond
+     ;; Use prefix arg to open new shell unconditionally
+     (arg
+      (call-interactively 'shell arg))
+     ;; cycle if already in shell buffer
+     ((eq saved-mode 'shell-mode)
+      (prelude-switch-to-same-mode-buffer))
+     ;; switch to binded shell
+     (t
+      (let ((shell-buf (or prelude-shell:binded-shell prelude-shell:last-shell)))
+        (if (and shell-buf (buffer-live-p shell-buf))
+            (switch-to-buffer-other-window shell-buf)
+          (call-interactively 'shell)))))
+    (unless (eq major-mode 'shell-mode)
+      (error "Not shell-mode buffer"))
+    (unless (eq saved-mode 'shell-mode)
+      (setq prelude-shell:last-buffer saved-buf))
+    (setq prelude-shell:last-shell (current-buffer))
+    (when (buffer-live-p prelude-shell:last-buffer)
+      (with-current-buffer prelude-shell:last-buffer
+        (setq prelude-shell:binded-shell prelude-shell:last-shell)))))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here
