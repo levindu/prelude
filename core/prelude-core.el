@@ -597,5 +597,20 @@ With a prefix argument ARG, find the `user-init-file' instead."
 (defun prelude-dired-set-omit-mode ()
   (dired-omit-mode (if prelude-dired-is-omit-mode-on 1 0)))
 
+(define-minor-mode prelude-check-mode
+  "Minor mode for checking syntax and whitespace."
+  :lighter ""
+  (if prelude-check-mode
+      (progn
+        (flycheck-mode +1)
+        (let ((whitespace-style '(face trailing tabs tab-mark newline-mark)) ; tab-mark
+              (whitespace-display-mappings
+               ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
+               '((newline -mark 10 [?\u21A9 ?\n] [?\u00B6 ?\n]) ; 10 LINE FEED
+                 (tab-mark 9 [?\u00BB ?\t] [?\\ ?\t]))))
+          (whitespace-mode +1)))
+    (flycheck-mode -1)
+    (whitespace-mode -1)))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here
