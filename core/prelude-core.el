@@ -837,5 +837,20 @@ With a prefix argument ARG, find the `user-init-file' instead."
       (unless (string-match "^finished" msg)
         (display-buffer buffer)))))
 
+(defun prelude-tag-preview (&optional jump-to-tag)
+  "Show tag in other window with no prompt in minibuf."
+  (interactive "P")
+  (let ((default (funcall (or find-tag-default-function
+			      (get major-mode 'find-tag-default-function)
+			      'find-tag-default)))
+        (win (get-buffer-window)))
+    (cond ((equal jump-to-tag '(4)) (call-interactively 'find-tag))
+          ((equal jump-to-tag '(16)) (call-interactively 'imenu))
+          (t
+           (find-tag-other-window default (equal last-tag default))
+           (shrink-window (- (window-height) 16))
+           (recenter 1)
+           (select-window win)))))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here
