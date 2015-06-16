@@ -806,5 +806,36 @@ With a prefix argument ARG, find the `user-init-file' instead."
       (with-current-buffer prelude-shell:last-buffer
         (setq prelude-shell:binded-shell prelude-shell:last-shell)))))
 
+(defconst prelude-compile-default-buffer-name "*compilation*")
+(defvar prelude-compile-saved-winner-data nil)
+
+(defun prelude-compile (&optional prompt)
+  "Save buffers and start compile."
+  (interactive "P")
+  (if prompt
+      (call-interactively 'compile)
+    (let ((compilation-ask-about-save nil))
+      (if (prelude-compile-is-running)
+          (let ((win (get-buffer-window prelude-compile-default-buffer-name)))
+            (if (window-live-p win)
+                (winner-set prelude-compile-saved-winner-data)
+              (setq prelude-compile-saved-winner-data (winner-conf))
+              (display-buffer prelude-compile-default-buffer-name)))
+        (save-window-excursion
+          (recompile)
+          (message (concat "Compiling: " compile-command)))))))
+
+(defun prelude-compile-is-running ()
+  (let ((comp-proc (get-buffer-process (get-buffer prelude-compile-default-buffer-name))))
+    (and comp-proc (eq (process-status comp-proc) 'run))))
+
+(defun prelude-compile-on-finish (buffer msg)
+  "Notify that the compilation is finished."
+  (with-current-buffer buffer
+    (when (eq major-mode 'compilation-mode)
+      (message "(compile result) $ %s\n\n%s" compile-command msg)
+      (unless (string-match "^finished" msg)
+        (display-buffer buffer)))))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here

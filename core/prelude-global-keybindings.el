@@ -64,6 +64,9 @@
 ;; Check syntax/whitespace
 (global-set-key (kbd "C-x y") 'prelude-check-mode)
 
+;; Invoke compile
+(global-set-key (kbd "C-x j") 'prelude-compile)
+
 ;; A complementary binding to the apropos-command (C-h a)
 (define-key 'help-command "A" 'apropos)
 
