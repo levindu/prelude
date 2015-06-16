@@ -52,14 +52,11 @@
 (unless (eq system-type 'darwin)
     (global-set-key (kbd "C-x p") 'proced))
 
-;; Start eshell or switch to it if it's active.
-(global-set-key (kbd "C-x m") 'eshell)
-
-;; Start a new eshell even if one is active.
-(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
-
 ;; Start a regular shell if you prefer that.
-(global-set-key (kbd "C-x M-m") 'shell)
+(global-set-key (kbd "C-x m") 'prelude-shell)
+
+;; Start eshell, use C-u to create new
+(global-set-key (kbd "C-x M") 'eshell)
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'smex)
