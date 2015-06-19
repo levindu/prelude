@@ -472,6 +472,79 @@ the current buffer."
   (interactive "p")
   (other-window (- arg)))
 
+(defun prelude-split-or-delete-window()
+  "Split or delete window."
+  (interactive)
+  (if (not (one-window-p))
+      (delete-other-windows)
+    (split-window-sensibly)
+    (other-window 1)))
+
+(defun prelude-rotate-split-window ()
+  "Rotate the split windows."
+  (interactive)
+  (let ((root (car (window-tree))))
+    (if (listp root)
+	(let* ((w1 (nth 2 root))
+	       (w2 (nth 3 root))
+               (b1 (window-buffer w1)) (b2 (window-buffer w2))
+               (s1 (window-start w1))  (s2 (window-start w2))
+               (p1 (window-point w1))  (p2 (window-point w2)))
+	  (cond ((car root)		; currently vertically split
+		 (delete-window w2)
+		 (set-window-buffer-start-and-point
+                  (split-window-horizontally) b2 s2 p2))
+		(t		       ; currently horizontally split
+		 (delete-window w2)
+		 (set-window-buffer-start-and-point
+                  (split-window-vertically)
+                  b2 s2 p2))))
+      (message "Root window not split"))))
+
+(defun prelude-rotate-split-window--find (tree cur-win)
+  "Find the window-tree leaf containing cur-win."
+  (cl-loop for win in (nthcdr 2 tree)
+           for result = (cond ((listp win)
+                               (prelude-rotate-split-window--find win cur-win))
+                              ((eq win cur-win) tree)) 
+           when result return result))
+
+(defun prelude-rotate-split-window ()
+  "Rotate the split windows."
+  (interactive)
+  (let ((root (car (window-tree)))
+        (cur-win (selected-window))
+        (cur-win-found 0)
+        peer-win
+        tree)
+    (assert (listp root) nil "Root window not split")
+    (setq tree (prelude-rotate-split-window--find root cur-win))
+    ;; find peer win
+    (cl-loop for win in (nthcdr 2 tree)
+             do (cond ((listp win) nil)
+                      ((eq win cur-win)
+                       (setq cur-win-found 1))
+                      ((<= cur-win-found 1)
+                       (setq peer-win win)
+                       (when (= cur-win-found 1)
+                         (setq cur-win-found 2)))))
+    (assert peer-win nil "No peer window")
+    (let* ((win-cons (if (= cur-win-found 1)
+                          (cons peer-win cur-win)
+                        (cons cur-win peer-win)))
+           (w1 (car win-cons))
+           (w2 (cdr win-cons))
+           (b2 (window-buffer w2))
+           (s2 (window-start w2))
+           (p2 (window-point w2)))
+      (delete-window w2)
+      (select-window w1)
+      (setq w2 (if (car tree)           ; currently vertically split
+                   (split-window-horizontally)
+                 (split-window-vertically)))
+      (set-window-buffer-start-and-point w2 b2 s2 p2)
+      (select-window (if (= cur-win-found 1) w2 w1)))))
+
 (defun prelude-switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
