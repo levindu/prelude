@@ -50,6 +50,8 @@
 
 ;; delete the selection with a keypress
 (delete-selection-mode t)
+;; Highlight region in non-selected windows
+(setq highlight-nonselected-windows t)
 
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
