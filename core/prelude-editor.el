@@ -473,6 +473,15 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
 (use-package goto-chg
   :commands (goto-last-change goto-last-change-reverse))
 
+(defadvice save-buffers-kill-terminal (around query-and-might-skip activate)
+  "Query before quit Emacs. Use prefix arg to skip kill-emacs-hook, as an emergence to quit."
+  (interactive "P")
+  (when (y-or-n-p "Really quit emacs?")
+    (if arg
+	(let (kill-emacs-hook)
+	  ad-do-it)
+      ad-do-it)))
+
 ;; `M-x edit-list' to modify list quickly.
 (use-package edit-list
   :commands edit-list)
