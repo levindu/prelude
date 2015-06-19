@@ -922,5 +922,10 @@ With a prefix argument ARG, find the `user-init-file' instead."
            (recenter 1)
            (select-window win)))))
 
+(defun prelude-customize-face-at-point ()
+  "Customize face at current point."
+  (interactive)
+  (customize-face (get-char-property (point) 'face)))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here
