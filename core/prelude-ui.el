@@ -61,6 +61,7 @@
 (column-number-mode t)
 (size-indication-mode t)
 (display-time-mode t)
+(use-package powerline :config (powerline-default-theme))
 
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
