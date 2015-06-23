@@ -60,6 +60,7 @@
 (line-number-mode t)
 (column-number-mode t)
 (size-indication-mode t)
+(display-time-mode t)
 
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
