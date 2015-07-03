@@ -190,6 +190,17 @@ The body of the advice is in BODY."
 ;; highlight the current line
 (global-hl-line-mode +1)
 
+;; auto highlight symbol
+(use-package auto-highlight-symbol
+  :init (setq ahs-default-range 'ahs-range-whole-buffer)
+  :diminish auto-highlight-symbol-mode
+  :config
+  (progn
+    (setq ahs-idle-interval 0.5)
+    ;;  ahs-back-to-start
+    (define-key auto-highlight-symbol-mode-map (kbd "M--") nil)
+    (global-auto-highlight-symbol-mode +1)))
+
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 (diminish 'volatile-highlights-mode)
