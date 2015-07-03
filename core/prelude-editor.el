@@ -190,6 +190,15 @@ The body of the advice is in BODY."
 ;; highlight the current line
 (global-hl-line-mode +1)
 
+;; highlight parentheses
+(use-package highlight-parentheses
+  :diminish highlight-parentheses-mode
+  :init
+  (progn
+    (setq hl-paren-colors
+          '("firebrick1" "orange" "yellow" "green" "cyan"))
+    (global-highlight-parentheses-mode +1)))
+
 ;; auto highlight symbol
 (use-package auto-highlight-symbol
   :init (setq ahs-default-range 'ahs-range-whole-buffer)
