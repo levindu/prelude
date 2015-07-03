@@ -381,6 +381,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; enable Prelude's keybindings
 (prelude-global-mode t)
+(diminish 'prelude-mode)
 
 ;; sensible undo
 (global-undo-tree-mode)
