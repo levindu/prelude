@@ -466,6 +466,10 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
                                      (string-to-number (or (match-string 3 name) ""))))
                             fn))) files)))
 
+;; `M-x edit-list' to modify list quickly.
+(use-package edit-list
+  :commands edit-list)
+
 (provide 'prelude-editor)
 
 ;;; prelude-editor.el ends here
