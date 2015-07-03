@@ -397,6 +397,10 @@ the current buffer."
       (set-window-start w2 s1)))
   (other-window 1))
 
+(defun prelude-other-window-backward (arg)
+  (interactive "p")
+  (other-window (- arg)))
+
 (defun prelude-switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."

@@ -40,9 +40,7 @@
 ;; (global-set-key (kbd "C--") 'text-scale-decrease)
 
 ;; Window switching. (C-x o goes to the next window)
-(global-set-key (kbd "C-x O") (lambda ()
-                                (interactive)
-                                (other-window -1))) ;; back one
+(global-set-key (kbd "C-x O") 'prelude-other-window-backward) ;; back one
 
 ;; Indentation help
 (global-set-key (kbd "C-^") 'prelude-top-join-line)
@@ -141,6 +139,52 @@
 (global-set-key (kbd "C-'") 'prelude-switch-to-previous-buffer)
 (global-set-key (kbd "C-`") 'prelude-switch-to-same-mode-buffer)
 (global-set-key (kbd "C-\"") 'goto-last-change)
+
+;; M-g is the goto commander
+(smartrep-define-key global-map "M-g"
+  '(;; error navigation
+    ("M-n" . next-error)
+    ("n" . next-error)
+    ("M-p" . previous-error)
+    ("p" . previous-error)
+
+    ;; window switch
+    ("M-o" . other-window)
+    ("o" . other-window)
+    ("M-i" . prelude-other-window-backward)
+    ("i" . prelude-other-window-backward)
+    ("M-u" . winner-undo)
+    ("u" . winner-redo)
+
+    ;; buffer switch
+    ("M-j" . previous-buffer)
+    ("j" . previous-buffer)
+    ("M-k" . next-buffer)
+    ("k" . next-buffer)
+
+    ;; misc
+    ("M-m" . goto-last-change)
+    ("m" . goto-last-change-reverse)
+    ("M-f" . ahs-forward)
+    ("M-b" . ahs-backward)
+    ("M-F" . ahs-forward-definition)
+    ("M-B" . ahs-backward-definition)
+    ))
+
+;; (global-set-key (kbd "M-g M-g") 'goto-line)
+;; (global-set-key (kbd "M-g g") 'goto-line)
+(global-set-key (kbd "M-g M-c") 'avy-goto-char)
+(global-set-key (kbd "M-g c") 'avy-goto-char)
+(global-set-key (kbd "M-g M-w") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "M-g w") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "M-g M-l") 'avy-goto-line)
+(global-set-key (kbd "M-g l") 'avy-goto-line)
+(global-set-key (kbd "M-g M-y") 'ace-window)
+(global-set-key (kbd "M-g y") 'ace-window)
+
+(global-set-key (kbd "M-g M-v") 'switch-to-buffer-other-window)
+(global-set-key (kbd "M-g v") 'switch-to-buffer-other-window)
+(global-set-key (kbd "M-g .") 'imenu)
 
 (provide 'prelude-global-keybindings)
 
