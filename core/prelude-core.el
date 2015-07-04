@@ -542,5 +542,16 @@ With a prefix argument ARG, find the `user-init-file' instead."
           (add-to-list 'symbol-names (substring-no-properties name))
           (add-to-list 'name-and-pos (cons (substring-no-properties name) position))))))))
 
+(defvar prelude-dired-is-omit-mode-on t)
+
+(defun prelude-dired-toggle-omit-mode ()
+  (interactive)
+  (setq prelude-dired-is-omit-mode-on
+        (not prelude-dired-is-omit-mode-on))
+  (prelude-dired-set-omit-mode))
+
+(defun prelude-dired-set-omit-mode ()
+  (dired-omit-mode (if prelude-dired-is-omit-mode-on 1 0)))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here

@@ -287,6 +287,18 @@ The body of the advice is in BODY."
 ;; enable some really cool extensions like C-x C-j(dired-jump)
 (require 'dired-x)
 
+;; make executable standout
+(add-to-list 'dired-font-lock-keywords
+             (list dired-re-exe
+                   '(".+" (dired-move-to-filename) nil (0 font-lock-comment-face)))
+             t)
+
+(add-to-list 'dired-omit-extensions "_pycache__")
+(setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*")
+
+(define-key dired-mode-map (kbd "/")  'prelude-dired-toggle-omit-mode)
+(add-hook 'dired-mode-hook 'prelude-dired-set-omit-mode)
+
 ;; ediff - don't start another frame
 (require 'ediff)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
