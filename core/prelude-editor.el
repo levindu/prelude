@@ -466,6 +466,9 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
                                      (string-to-number (or (match-string 3 name) ""))))
                             fn))) files)))
 
+(use-package goto-chg
+  :commands (goto-last-change goto-last-change-reverse))
+
 ;; `M-x edit-list' to modify list quickly.
 (use-package edit-list
   :commands edit-list)
