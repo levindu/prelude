@@ -1,0 +1,164 @@
+** smartparens
+Navigation
+| C-M-f           | sp-forward-sexp                 |
+| C-M-b           | sp-backward-sexp                |
+| C-M-n           | sp-next-sexp                    |
+| C-M-p           | sp-previous-sexp                |
+| C-M-e           | sp-up-sexp                      |
+| C-M-d           | sp-down-sexp                    |
+| C-M-u           | sp-backward-up-sexp             |
+| C-M-a           | sp-backward-down-sexp           |
+| C-S-d           | sp-beginning-of-sexp            |
+| C-S-a           | sp-end-of-sexp                  |
+| M-F             | sp-forward-symbol               |
+| M-B             | sp-backward-symbol              |
+
+Copy/Kill
+| C-M-k           | sp-kill-sexp                    |
+| C-M-w           | sp-copy-sexp                    |
+| C-M-<delete>    | sp-splice-sexp-killing-forward  |
+| C-M-<backspace> | sp-splice-sexp-killing-backward |
+| C-S-<backspace> | sp-splice-sexp-killing-around   |
+
+Edit
+| M-<delete>      | sp-unwrap-sexp                  |
+| M-<backspace>   | sp-backward-unwrap-sexp         |
+| C-<right>       | sp-forward-slurp-sexp           |
+| C-<left>        | sp-forward-barf-sexp            |
+| C-M-<left>      | sp-backward-slurp-sexp          |
+| C-M-<right>     | sp-backward-barf-sexp           |
+| M-D             | sp-splice-sexp                  |
+
+Select
+| C-]             | sp-select-next-thing-exchange   |
+| C-M-]           | sp-select-next-thing            |
+* Calendar
+** calfw
+| [left], b, h     | previous day         |
+| [right], f, l    | next day             |
+| [up], p, k       | previous week        |
+| [down], n, j     | next week            |
+| \^               | start of week        |
+| \$               | end of week          |
+| [home]           | start of month       |
+| [end]            | end of month         |
+| M-v, [PgUp], <   | previous month       |
+| C-v, [PgDown], > | next month           |
+| t                | today                |
+| g                | jump to date         |
+| TAB              | next item            |
+| M                | month view           |
+| W                | week view            |
+| T                | two week view        |
+| D                | day view             |
+| r                | refresh              |
+| SPC              | detail               |
+| RET, [click]     | jump (howm, orgmode) |
+| q                | quit                 |
+* Helm
+| Key Binding | Command                         | Description                                                  |
+| M-x         | helm-M-x                        | List commands                                                |
+| M-y         | helm-show-kill-ring             | Shows the content of the kill ring                           |
+| C-x b       | helm-mini                       | Shows open buffers, recently opened files                    |
+| C-x C-f     | helm-find-files                 | The helm version for find-file                               |
+| C-s         | helm-ff-run-grep                | Run grep from within helm-find-files                         |
+| C-c h i     | helm-semantic-or-imenu          | Helm interface to semantic/imenu                             |
+| C-c h m     | helm-man-woman                  | Jump to any man entry                                        |
+| C-c h /     | helm-find                       | Helm interface to find                                       |
+| C-c h l     | helm-locate                     | Helm interface to locate                                     |
+| C-c h o     | helm-occur                      | Similar to occur                                             |
+| C-c h a     | helm-apropos                    | Describes commands, functions, variables, ...                |
+| C-c h h g   | helm-info-gnus                  |                                                              |
+| C-c h h i   | helm-info-at-point              |                                                              |
+| C-c h h r   | helm-info-emacs                 |                                                              |
+| C-c h <tab> | helm-lisp-completion-at-point   | Provides a list of available functions                       |
+| C-c h b     | helm-resume                     | Resumes a previous helm session                              |
+| C-h SPC     | helm-all-mark-rings             | Views content of local and global mark rings                 |
+| C-c h r     | helm-regex                      | Visualizes regex matches                                     |
+| C-c h x     | helm-register                   | Shows content of registers                                   |
+| C-c h t     | helm-top                        | Helm interface to top                                        |
+| C-c h s     | helm-surfraw                    | Command line interface to many web search engines            |
+| C-c h g     | helm-google-suggest             | Interactively enter search terms and get results from Google |
+| C-c h c     | helm-color                      | Lists all available faces                                    |
+| C-c h M-:   | helm-eval-expression-with-eldoc | Get instant results for emacs lisp expressions               |
+| C-c h C-,   | helm-calcul-expression          | Helm interface to calc                                       |
+| C-c C-l     | helm-eshell-history             | Interface to eshell history                                  |
+| C-c C-l     | helm-comint-input-ring          | Interface to shell history                                   |
+| C-c C-l     | helm-mini-buffer-history        | Interface to mini-buffer history                             |
+
+* Org-mode
+** Configuration in File
+#+begin_src org
+,#+TODO: TODO FEEDBACK VERIFY | DONE CANCELED
+,#+TODO: REPORT BUG KNOWNCAUSE | FIXED
+,#+TODO: | CANCELED
+,#+TYP_TODO: Fred Sara Lucy Mike | DONE
+#+end_src
+
+#+begin_src org
+,#+STARTUP: content
+,#+STARTUP: lognotestate
+,#+SEQ_TODO: TODO(t) NEXT(n) WAITING(w@) DELEGATED(l@) APPT(a) | DONE(d) DEFERRED(f@) CANCELLED(x@)
+,#+TAGS: { HOME(h) WORK(w) SHOP(s) } CALL(c) ERRAND(e) EMACS(m)
+#+end_src
+
+** List
+*** Item List
+ - one
+ - two
+ - three
+ - [ ] another
+ - [ ] another one
+
+
+ + one
+ + two
+ + three
+ + [ ] another
+ + [ ] another one
+
+*** Numbered List
+Renumbered:
+ 1. one
+ 2. two
+ 30. [@30] thirty
+ 31. thirty-one
+ 100. [@100] [X] another
+ 101. [ ] another one
+
+Another style
+ 1) one
+ 2) two
+ 3) three
+
+*** 字母列表
+Reordered:
+ a. one
+ b. two
+ p. [@p] thirty
+ q. thirty-one
+ u. [@u] [ ] another
+ v. [ ] another one
+
+Another style:
+ a) one
+ b) two
+ c) three
+
+ A) one
+ B) two
+ C) three
+
+** Table
+*** Simple Table
+| <l>   | <r> | <3> | <c> | <l4> |
+| Tom   |  11 | Cat |     |      |
+| Jerry | 1.2 | Mouse |     |      |
+
+*** Date Calculation
+| Date             | Weight |
+|------------------+--------|
+| <2012-02-23 Thu> |     71 |
+| <2012-03-01 Thu> |        |
+| <2012-03-08 Thu> |        |
+#+TBLFM: @2$1=<2012-02-23 Thu>::$1=<@-1$1>+7
