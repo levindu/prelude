@@ -73,7 +73,7 @@ This functions should be added to the hooks of major modes for programming."
   (when prelude-guru
     (guru-mode +1))
   (smartparens-mode +1)
-  (prelude-enable-whitespace)
+  ;; (prelude-enable-whitespace)
   (prelude-local-comment-auto-fill)
   (prelude-font-lock-comment-annotations))
 

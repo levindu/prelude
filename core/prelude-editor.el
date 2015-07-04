@@ -242,20 +242,21 @@ The body of the advice is in BODY."
   (when (and prelude-flyspell (executable-find ispell-program-name))
     (flyspell-mode +1)))
 
-(defun prelude-cleanup-maybe ()
-  "Invoke `whitespace-cleanup' if `prelude-clean-whitespace-on-save' is not nil."
-  (when prelude-clean-whitespace-on-save
-    (whitespace-cleanup)))
+(use-package ws-butler
+  :commands ws-butler-mode)
 
 (defun prelude-enable-whitespace ()
   "Enable `whitespace-mode' if `prelude-whitespace' is not nil."
   (when prelude-whitespace
-    ;; keep the whitespace decent all the time (in this buffer)
-    (add-hook 'before-save-hook 'prelude-cleanup-maybe nil t)
+    (case prelude-clean-whitespace-on-save-backend
+      (ws-butler
+       (ws-butler-mode +1))
+      (whitespace
+       (add-hook 'before-save-hook 'whitespace-clean)))
     (whitespace-mode +1)))
 
 (add-hook 'text-mode-hook 'prelude-enable-flyspell)
-(add-hook 'text-mode-hook 'prelude-enable-whitespace)
+;; (add-hook 'text-mode-hook 'prelude-enable-whitespace)
 
 ;; enable narrowing commands
 (put 'narrow-to-region 'disabled nil)
