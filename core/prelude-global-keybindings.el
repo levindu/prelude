@@ -32,6 +32,9 @@
 
 ;;; Code:
 
+;; Smart tab
+(global-set-key (kbd "TAB") 'prelude-smart-tab)
+
 ;; Align your code in a pretty way.
 (global-set-key (kbd "C-x \\") 'align-regexp)
 

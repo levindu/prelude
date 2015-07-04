@@ -612,5 +612,70 @@ With a prefix argument ARG, find the `user-init-file' instead."
     (flycheck-mode -1)
     (whitespace-mode -1)))
 
+(defun prelude-complete ()
+  (interactive)
+  (cond
+   ((and (fboundp 'company-complete)
+         company-mode)
+    (call-interactively 'company-complete))
+   (t (completion-at-point))))
+
+(defun prelude-smart-tab (arg)
+  (interactive "P")
+  (cond
+   ;; The region is active, indent it.
+   ((use-region-p)
+    (cond (arg ; prefix argument
+           (indent-rigidly (region-beginning) (region-end) arg))
+          (t
+           (indent-region (region-beginning) (region-end)))))
+
+   ((or ;; indent-to-left-margin is only meant for indenting,
+        ;; so we force it to always insert a tab here.
+        (eq indent-line-function 'indent-to-left-margin)
+        (and (not tab-always-indent)
+             (or (> (current-column) (current-indentation))
+                 (eq this-command last-command))))
+    (insert-tab arg))
+
+   (t
+    (let ((old-tick (buffer-chars-modified-tick))
+          (old-point (point))
+          (old-indent (current-indentation)))
+
+      ;; Indent the line.
+      (funcall indent-line-function)
+
+      (cond
+       ;; If a prefix argument was given, rigidly indent the following
+       ;; sexp to match the change in the current line's indentation.
+       (arg
+        (let ((end-marker
+               (save-excursion
+                 (forward-line 0) (forward-sexp) (point-marker)))
+              (indentation-change (- (current-indentation) old-indent)))
+          (save-excursion
+            (forward-line 1)
+            (when (and (not (zerop indentation-change))
+                       (< (point) end-marker))
+              (indent-rigidly (point) end-marker indentation-change)))))
+
+       ((looking-at "\\s\(")
+        (save-excursion
+          (indent-region (point)
+                         (save-excursion (forward-sexp) (point)))))
+       ((and (eq old-point (point))
+             (eq old-tick (buffer-chars-modified-tick))
+             (and (looking-back "[ \t]+$")))
+        (delete-horizontal-space)
+        (forward-line 1)
+        (back-to-indentation))
+
+       ;; If the text was already indented right, try completion.
+       ((and (eq tab-always-indent 'complete)
+             (eq old-point (point))
+             (eq old-tick (buffer-chars-modified-tick)))
+        (prelude-complete)))))))
+
 (provide 'prelude-core)
 ;;; prelude-core.el ends here
