@@ -167,7 +167,8 @@
  org-agenda-tags-todo-honor-ignore-options t)
 
 ;; * Agenda
-(define-key prelude-org-prefix-keymap " " 'org-agenda)
+(define-key prelude-org-prefix-keymap " " (lambda (arg) (interactive "P") (org-agenda arg " ")))
+(define-key prelude-org-prefix-keymap "a" 'org-agenda)
 
 (setq
  org-agenda-custom-commands
@@ -267,6 +268,9 @@
       org-agenda-tags-column -102
       org-agenda-window-setup 'current-window
       org-agenda-log-mode-items '(closed state))
+
+;; use sticky view
+(setq org-agenda-sticky t)
 
 ;; agenda sort & filter
 (setq org-agenda-cmp-user-defined 'prelude-org-agenda-sort
@@ -1308,7 +1312,9 @@ Switch projects and subprojects from NEXT back to TODO"
   (interactive)
   (save-excursion
     (beginning-of-line 0)
-    (org-remove-empty-drawer-at (point))))
+    (let ((m (point-marker)))
+      (mapc (lambda (d)
+              (org-remove-empty-drawer-at d m)) org-drawers))))
 
 ;; ** Time
 (defun prelude-org-insert-inactive-timestamp ()
