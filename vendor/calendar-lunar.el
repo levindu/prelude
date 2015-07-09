@@ -284,9 +284,6 @@ else return the  day name"
                 (mapcar 'multibyte-string-p
                         (mapcar 'char-to-string string)))))
 
-;; ** End of calendar-lunar- namespace
-) ;; end of define-namespace calendar-lunar-
-
 ;; * Format / Conversion
 ;;test this function use this
 ;;(format-cntime-string "%Y年%m%d%q%o" (encode-time 0 0 0 4 2 1992))
@@ -344,13 +341,13 @@ like (11 2 1977 \"shuxiang\" \"sexagesimal\")."
     (list cmonth
           cday
           year
-          (calendar-lunar-shuxiang-name year)
-          (concat (calendar-lunar-sexagesimal-name cyear)
+          (shuxiang-name year)
+          (concat (sexagesimal-name cyear)
                   "年"
-                  (calendar-lunar-sexagesimal-name
+                  (sexagesimal-name
                    (+ (* 12 cyear) (floor cmonth) 50))
                   "月"
-                  (calendar-lunar-sexagesimal-name
+                  (sexagesimal-name
                    (+ absolute 15))
                   "日"))))
 
@@ -373,6 +370,14 @@ Call it like (chinese-to-gregorian-date 11 2 1977) and return like (12 12 1977).
                                    (calendar-chinese-to-absolute
                                     birthday-chinese-full))))
     birthday-gregorian-full))
+
+;; ** End of calendar-lunar- namespace
+) ;; end of define-namespace calendar-lunar-
+
+;; * Alias
+(defalias 'format-cntime-string 'calendar-lunar-format-cntime-string)
+(defalias 'chinese-from-gregorian-date 'calendar-lunar-chinese-from-gregorian-date)
+(defalias 'chinese-to-gregorian-date 'calendar-lunar-chinese-to-gregorian-date)
 
 ;; * Integration
 ;; ** Setting
