@@ -529,7 +529,7 @@
       org-alphabetical-lists t)
 
 ;; keys
-(setq org-special-ctrl-a/e t
+(setq org-special-ctrl-a/e 'reverse
       org-special-ctrl-k t)
 (setq org-support-shift-select t)
 
