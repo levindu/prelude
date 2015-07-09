@@ -31,6 +31,7 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
+(require 'calendar-lunar nil t)
 
 ;; 设置 sentence-end 可以识别中文标点
 (setq sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[
@@ -71,6 +72,7 @@
 ;; ** eim 输入法
 (use-package eim
   :commands eim-use-package
+  :ensure nil
   :init
   (progn
     ;; Tooltip 暂时还不好用
