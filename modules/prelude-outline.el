@@ -52,17 +52,7 @@
     (use-package outshine
       :config
       (progn
-        (setq outshine-use-speed-commands t)
-        (add-hook 'org-mode-hook
-                  (lambda ()
-                    ;; Redefine arrow keys, since promoting/demoting and moving
-                    ;; subtrees up and down are less frequent tasks then
-                    ;; navigation and visibility cycling
-                    (org-defkey org-mode-map (kbd "M-<left>") 'outline-hide-more)
-                    (org-defkey org-mode-map (kbd "M-<right>") 'outline-show-more)
-                    (org-defkey org-mode-map (kbd "M-<up>") 'outline-previous-visible-heading)
-                    (org-defkey org-mode-map (kbd "M-<down>") 'outline-next-visible-heading))
-                  'append)))
+        (setq outshine-use-speed-commands t)))
 
     ;; outorg
     (use-package outorg
