@@ -503,6 +503,7 @@
  org-stuck-projects '("" nil nil "") ; disable default stuck project setting
  org-cycle-separator-lines 0
  org-cycle-emulate-tab 'whitestart
+ org-goto-auto-isearch nil
  org-blank-before-new-entry '((heading)
                               (plain-list-item . auto))
  org-insert-heading-respect-content nil
