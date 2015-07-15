@@ -302,6 +302,7 @@
 (define-key prelude-org-prefix-keymap "o" 'prelude-org-punch-out)
 
 (define-key prelude-org-prefix-keymap "g" 'org-clock-goto)
+(define-key prelude-org-prefix-keymap [f12] 'org-clock-goto)
 (define-key prelude-org-prefix-keymap "h" 'prelude-org-clock-in-history-list)
 (define-key prelude-org-prefix-keymap "l" 'prelude-org-clock-in-last-task)
 
@@ -522,7 +523,8 @@
 (setq org-emphasis-alist
       (remove-if (lambda (x) (string-match-p "[+]" (car x)))
                  org-emphasis-alist))
-(setq org-use-sub-superscripts nil)
+(setq org-use-sub-superscripts nil
+      org-export-with-sub-superscripts nil)
 
 
 ;; list
@@ -936,21 +938,49 @@ Late deadlines first, then scheduled, then non-late deadlines"
       (goto-char parent-task)
       parent-task)))
 
+(defun prelude-org-map-subtree (fun)
+  "Call FUN for every sub heading underneath the current one."
+  (org-back-to-heading)
+  (let ((level (funcall outline-level)))
+    (save-excursion
+      (while (and (progn
+		    (outline-next-heading)
+		    (> (funcall outline-level) level))
+		  (not (eobp)))
+	(funcall fun)))))
+
+(defun prelude-org-check-subtree-any (any-fun)
+  "Call ANY-FUN for every sub heading underneath the current one.
+Return once the result is t."
+  (catch 'prelude-org-map-subtree-any-found
+    (prelude-org-map-subtree
+     (lambda ()
+       (when (funcall any-fun)
+         (throw 'prelude-org-map-subtree-any-found t))))
+    nil))
+
 (defun prelude-org-is-project-p ()
   "Any task with a todo keyword subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task has-subtask))))
+  (and (member (org-get-todo-state) org-todo-keywords-1)
+       (org-with-wide-buffer
+        (catch 'found
+          (prelude-org-map-subtree
+           (lambda ()
+             (when (member (org-get-todo-state) org-todo-keywords-1)
+               (throw 'found t))))
+          nil))))
+
+(defun prelude-org-is-project-has-task-p (todo-keywords)
+  "Project has any leaf task with todo state in TODO-KEYWORDS list."
+  (and (member (org-get-todo-state) org-todo-keywords-1)
+       (org-with-wide-buffer
+        (catch 'found
+          (prelude-org-map-subtree
+           (lambda ()
+             (when (and (member (org-get-todo-state) todo-keywords)
+                        (not (prelude-org-is-project-p)))
+               (throw 'found t))))
+          nil))))
 
 (defun prelude-org-is-project-subtree-p ()
   "Any task with a todo keyword that is in a project subtree.
@@ -965,29 +995,8 @@ Callers of this function already widen the buffer view."
 
 (defun prelude-org-is-task-p ()
   "Any task with a todo keyword and no subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task (not has-subtask)))))
-
-(defun prelude-org-is-subproject-p ()
-  "Any task which is a subtask of another project"
-  (let ((is-subproject)
-        (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-    (save-excursion
-      (while (and (not is-subproject) (org-up-heading-safe))
-        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-          (setq is-subproject t))))
-    (and is-a-task is-subproject)))
+  (and (member (org-get-todo-state) org-todo-keywords-1)
+       (not (prelude-org-is-project-p))))
 
 (defun prelude-org-list-sublevels-for-projects-indented ()
   "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
@@ -1005,42 +1014,19 @@ Callers of this function already widen the buffer view."
     (setq org-tags-match-list-sublevels nil))
   nil)
 
-(defun prelude-org-skip-stuck-projects ()
-  "Skip trees that are stuck projects"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (prelude-org-is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
-                  (setq has-next t))))
-            (if has-next
-                nil
-              subtree-end)) ; a stuck project, has subtasks but no next task
-        nil))))
-
 (defun prelude-org-skip-non-stuck-projects ()
   "Skip trees that are not stuck projects"
   ;; (prelude-org-list-sublevels-for-projects-indented)
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (prelude-org-is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
-                  (setq has-next t))))
-            (if has-next
-                next-headline
-              nil)) ; a stuck project, has subtasks but no next task
-        next-headline))))
+  (org-with-wide-buffer
+   (let ((next-headline (save-excursion (outline-next-heading))))
+     (if (prelude-org-is-project-p)
+         (if (prelude-org-check-subtree-any
+              #'(lambda ()
+                  (and (string= (org-get-todo-state) "NEXT")
+                       (not (member "WAITING" (org-get-tags-at))))))
+             next-headline
+           nil)
+       next-headline))))
 
 (defun prelude-org-skip-non-projects ()
   "Skip trees that are not projects"
@@ -1127,6 +1113,35 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
        (t
         nil)))))
 
+(defun prelude-org-skip-all-but-next-tasks-and-projects ()
+  "Show next tasks, and its maybe projects."
+  (save-restriction
+    (widen)
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((member (org-get-todo-state) (list "NEXT"))
+        nil)
+       ((prelude-org-is-project-has-task-p (list "NEXT"))
+        nil)
+       (t
+        subtree-end)))))
+
+(defun prelude-org-skip-all-but-todo-tasks-and-projects ()
+  "Show todo tasks and its maybe projects."
+  (save-restriction
+    (widen)
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((org-is-habit-p)
+        subtree-end)
+       ((member (org-get-todo-state) (list "NEXT"))
+        subtree-end)
+       ((prelude-org-is-project-p)
+        (if (prelude-org-is-project-has-task-p (list "TODO"))
+           nil subtree-end))
+       (t
+        nil)))))
+
 (defun prelude-org-skip-project-tasks-maybe ()
   "Show tasks related to the current restriction.
 When restricted to a project, skip project and sub project tasks, habits, NEXT tasks, and loose tasks.
@@ -1163,13 +1178,6 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
         subtree-end)
        (t
         nil)))))
-
-(defun prelude-org-skip-non-subprojects ()
-  "Skip trees that are not projects"
-  (let ((next-headline (save-excursion (outline-next-heading))))
-    (if (prelude-org-is-subproject-p)
-        nil
-      next-headline)))
 
 (defun prelude-org-skip-non-archivable-tasks ()
   "Skip trees that are not available for archiving"
